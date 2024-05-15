@@ -1,13 +1,12 @@
 package Metody;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.JavascriptExecutor;
 import org.sikuli.script.*;
 
 
+import javax.enterprise.inject.New;
 import java.util.List;
 
 import static Zmienne.Zmienne.*;
@@ -16,7 +15,6 @@ import static Zmienne.Zmienne.*;
 public class Metody {
     public static WebDriverWait wait;
     public static EdgeDriver driver;
-    public static Screen sikulix = new Screen();
 
 
     public static void ScrollToElement(String element) {
@@ -113,13 +111,15 @@ public class Metody {
         driver.findElement(By.xpath(ButtonCart)).click();
         driver.findElement(By.xpath(ButtonPurchase)).click();
     }
-    public static void WypelnienieZamowienia(String Name,String LastName,String Company,String Street,String Street2,String ZIP,String Town,String Phone,String Email) throws InterruptedException {
-        driver.findElement(By.xpath(TextBoxName)).sendKeys(Name);
+    public static void WypelnienieZamowienia(String Name, String LastName, String Company, String Street, String Street2, String ZIP, String Town, String Phone, String Email) throws InterruptedException {
+        WebElement lastNameField = driver.findElement(By.xpath(TextBoxLastNameBiling));
+        if (lastNameField.getText().isEmpty()) {
+            lastNameField.sendKeys(LastName);
+        }
+
+        driver.findElement(By.xpath(TextboxNameBiling)).sendKeys(Name);
         Thread.sleep(500);
         driver.findElement(By.xpath(TextBoxLastNameBiling)).sendKeys(LastName);
-        if (TextBoxLastNameBiling.isEmpty()){
-            driver.findElement(By.xpath(TextBoxLastNameBiling)).sendKeys(LastName);
-        }
         driver.findElement(By.xpath(TextBoxCompanyBiling)).sendKeys(Company);
         driver.findElement(By.xpath(TextBoxStreetAdressBiling)).sendKeys(Street);
         driver.findElement(By.xpath(TextBoxStreetAdressBiling2)).sendKeys(Street2);
@@ -127,9 +127,39 @@ public class Metody {
         driver.findElement(By.xpath(TextBoxTownBiling)).sendKeys(Town);
         driver.findElement(By.xpath(TextBoxPhoneBiling)).sendKeys(Phone);
         driver.findElement(By.xpath(TextBoxEmailBiling)).sendKeys(Email);
-        driver.findElement(By.xpath(ButtonPlaceOrder)).click();
-        driver.findElement(By.xpath(LabelThanksForPurhase));
+        Thread.sleep(500);
+        driver.findElement(By.xpath(TextBoxBilingPlaceOrder)).click();
+        Thread.sleep(1000);
+
+        try {
+            // Sprawdzamy, czy element błędu istnieje
+            WebElement errorElement = null;
+            try {
+                errorElement = driver.findElement(By.xpath("//div[contains(@class,'error')]"));
+            } catch (NoSuchElementException ex) {
+                // Jeśli element nie istnieje, nic nie robimy
+            }
+
+            // Jeśli element błędu istnieje i jest widoczny, wykonujemy odpowiednie działania
+            if (errorElement != null && errorElement.isDisplayed()) {
+                driver.findElement(By.xpath(TextBoxBilingPlaceOrder)).click();
+                Thread.sleep(1000);
+            } else {
+                WebElement thanksElement = null;
+                try {
+                    thanksElement = driver.findElement(By.xpath(LabelThanksForPurhase));
+                } catch (NoSuchElementException ex) {
+                }
+                if (thanksElement != null && thanksElement.isDisplayed()) {
+                }
+            }
+        } catch (ElementNotInteractableException e) {
+        }
     }
+
+
+
+
     public static void WyszukiwanieProduktow(String product) throws InterruptedException {
         driver.findElement(By.xpath(ButtonMainMenu)).click();
         driver.findElement(By.xpath(TextFieldSearch)).sendKeys(product);

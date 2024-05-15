@@ -48,7 +48,8 @@ public class Zmienne {
     public static String ButtonAddToCart = "//button[normalize-space()='Add to cart']";
     public static String ButtonCart = "//*[contains(text(),'My Cart')]";
     public static String ButtonPurchase = "//*[normalize-space()='Proceed to checkout']";
-    public static String TextboxNameBiling = "//input[@id='billing_first_name']";
+    public static String TextboxNameBiling = "//input[contains(@autocomplete,'given-name')][1]";
+
     public static String TextBoxLastNameBiling = "//input[contains(@autocomplete,'family-name')][1]";
     public static String TextBoxCompanyBiling = "//*[@id='billing_company']";
     public static String TextBoxStreetAdressBiling = "//input[@id='billing_address_1']";
@@ -57,5 +58,6 @@ public class Zmienne {
     public static String TextBoxTownBiling = "//input[@id='billing_city']";
     public static String TextBoxPhoneBiling = "//input[@id='billing_phone']";
     public static String TextBoxEmailBiling = "//input[@id='billing_email']";
+    public static String TextBoxBilingPlaceOrder = "//*[@value='Place order']";
 
 }
